@@ -1,0 +1,689 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CSS3のみで色々な背景パターンを描画する - ckazu.github.com</title>
+  <meta name="author" content="ckazu">
+
+  
+  <meta name="description" content="CSS3 で作る背景パターン - jsdo.it - share JavaScript, HTML5 and CSS gradient() background-image に，gradient() を指定するとグラデーションを実現できます． 現状では，webkit, moz &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ckazu.github.com/blog/2011/03/21/css3-jsdo-it-CSS3/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="ckazu.github.com" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36244087-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">ckazu.github.com</a></h1>
+  
+    <h2>What is an Information Architecture?</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ckazu.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CSS3のみで色々な背景パターンを描画する</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-21T00:00:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><script type="text/javascript" src="http://jsdo.it/blogparts/hvCi/js?view=design"></script>
+
+
+<p class="ttlBpJsdoit" style="width: 465px; margin: 0; text-align: right; font-size: 11px;"><a href="http://jsdo.it/ckazu/hvCi" title="CSS3 で作る背景パターン">CSS3 で作る背景パターン - jsdo.it - share JavaScript, HTML5 and CSS</a></p>
+
+
+
+
+<!-- more -->
+
+
+<h2>gradient()</h2>
+
+<p>background-image に，gradient() を指定するとグラデーションを実現できます．</p>
+
+<p>現状では，webkit, moz で指定方法が異なります．
+webkit のほうが面倒ですね．webkit の書式は変更するとか何とか．．．</p>
+
+<p><strong class="rainbow"></strong></p>
+
+<p><style>
+strong.rainbow {
+  display: inline-block;
+  width: 300px;
+  height: 40px;
+  border: 1px solid #333;
+  background: -moz-linear-gradient(left, red, orange, yellow, green, blue, navy, purple);
+  background: -webkit-gradient(linear, left top, right top, from(red), color-stop(.14, orange), color-stop(.28, yellow), color-stop(.42, green), color-stop(.56, blue), color-stop(.68, navy), to(purple));
+}
+</style></p>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.rainbow</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">left</span><span class="o">,</span> <span class="nb">red</span><span class="o">,</span> <span class="nb">orange</span><span class="o">,</span> <span class="nb">yellow</span><span class="o">,</span> <span class="nb">green</span><span class="o">,</span> <span class="nb">blue</span><span class="o">,</span> <span class="nb">navy</span><span class="o">,</span> <span class="nb">purple</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">background</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="nb">red</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">14</span><span class="o">,</span> <span class="nb">orange</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">28</span><span class="o">,</span> <span class="nb">yellow</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">42</span><span class="o">,</span> <span class="nb">green</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">56</span><span class="o">,</span> <span class="nb">blue</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">68</span><span class="o">,</span> <span class="nb">navy</span><span class="p">)</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="nb">purple</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>rgba で透明度を指定する</h2>
+
+<p>rgba() を用いると透明度を設定することができます．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nt">rgba</span><span class="o">(&lt;</span><span class="nt">red</span><span class="o">&gt;,</span> <span class="o">&lt;</span><span class="nt">green</span><span class="o">&gt;,</span> <span class="o">&lt;</span><span class="nt">blue</span><span class="o">&gt;,</span> <span class="o">&lt;</span><span class="nt">alphavalue</span><span class="o">&gt;);</span>
+</span><span class='line'><span class="err">ただし，</span><span class="nt">red</span><span class="o">,</span> <span class="nt">green</span><span class="o">,</span> <span class="nt">blue</span> <span class="err">は</span> <span class="nt">0-255</span> <span class="err">の値，</span><span class="nt">alphavalue</span> <span class="err">は</span> <span class="nt">0-1</span> <span class="err">の値．</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これを利用して，background-color で設定した色を background-image に重ねることができます．</p>
+
+<p>たとえば，これらに</p>
+
+<p><strong class="block red"></strong><strong class="block green"></strong><strong class="block blue"></strong></p>
+
+<p>これを重ねると，</p>
+
+<p><strong class="block rgba-sample"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.gradation</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">bottom</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こうなります．</p>
+
+<p><strong class="block rgba-sample red"></strong><strong class="block rgba-sample green"></strong><strong class="block rgba-sample blue"></strong></p>
+
+<p>最初から赤や緑のなどのグラデーションを用意しておけば良いように思えますが，半透明のグラデーションなりのスタイルを用意しておくだけで，使い回しが効くので便利です．</p>
+
+<p><style>
+strong.block {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin: 0 2px;
+  border: 1px solid #333;
+}
+strong.rgba-sample { background-image: -moz-linear-gradient(top, rgba( 0, 0, 0, .5), rgba(255,255,255, .5)); }
+strong.rgba-sample { background-image: -webkit-gradient(linear, left top, left bottom, from(rgba( 0, 0, 0, .5)), to(rgba(255,255,255, .5))); }
+
+strong.red { background-color: red; }
+strong.green { background-color: green; }
+strong.blue { background-color: blue; }
+</style></p>
+
+
+<h2>複数のパターンを重ねる</h2>
+
+<p>CSS3 では，background-image には，複数の画像を指定できるようになりました．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">background-image</span><span class="o">:</span> <span class="nt">url</span><span class="o">(</span><span class="nt">a</span><span class="nc">.png</span><span class="o">),</span> <span class="nt">url</span><span class="o">(</span><span class="nt">b</span><span class="nc">.png</span><span class="o">),</span> <span class="nt">url</span><span class="o">(</span><span class="nt">c</span><span class="nc">.png</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここには，もちろん gradient() も指定できます．</p>
+
+<p>たとえば，次の3種類のグラデーションを，</p>
+
+<p><strong class="l-block g-red"></strong><strong class="l-block g-green"></strong><strong class="l-block g-blue"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.red</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span>  <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nc">.green</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">right</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nc">.blue</span>  <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">bottom</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すべて混ぜると，次のようになります．</p>
+
+<p>すべてのグラデーションが混ざっているのが分かるでしょうか．</p>
+
+<p><strong class="l-block multi-gradient"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.mixes</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">))</span><span class="o">,</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">right</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">))</span><span class="o">,</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)))</span><span class="o">,</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)))</span><span class="o">,</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">bottom</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p><style>
+strong.l-block {
+  display: inline-block;
+  width: 200px;
+  height: 40px;
+  margin: 0 2px;
+  border: 1px solid #333;
+}
+strong.g-red   {
+  background-image: -moz-linear-gradient(top left,  rgba(255,  0,  0, .5), rgba(255,255,255,.1));
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255,  0,  0, .5)), to(rgba(255,255,255,.1)));
+}
+strong.g-green {
+  background-image: -moz-linear-gradient(top right, rgba(  0,255,  0, .5), rgba(255,255,255,.1));
+  background-image: -webkit-gradient(linear, right top, left top, from(rgba(  0,255,  0, .5)), to(rgba(255,255,255,.1)));
+}
+strong.g-blue  {
+  background-image: -moz-linear-gradient(top, rgba(  0,  0,255, .5), rgba(255,255,255,.1));
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(  0,  0,255, .5)), to(rgba(255,255,255,.1)));
+}
+strong.multi-gradient {
+  background-image: -moz-linear-gradient(top left,  rgba(255,  0,  0, .5), rgba(255,255,255,.1)),
+                    -moz-linear-gradient(top right, rgba(  0,255,  0, .5), rgba(255,255,255,.1)),
+                    -moz-linear-gradient(top,       rgba(  0,  0,255, .5), rgba(255,255,255,.1));
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255,  0,  0, .5)), to(rgba(255,255,255,.1))),
+                                  -webkit-gradient(linear, right top, left top, from(rgba(  0,255,  0, .5)), to(rgba(255,255,255,.1))),
+                                  -webkit-gradient(linear, left top, left bottom, from(rgba(  0,  0,255, .5)), to(rgba(255,255,255,.1)));
+}
+</style></p>
+
+
+<h2>gradient() でストライプを作る</h2>
+
+<p>また，gradient の指定を工夫すると，このようなパターンを作ることができます．</p>
+
+<p><strong class="block sample-stripe"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.stripe</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">left</span><span class="o">,</span> <span class="k">transparent</span><span class="o">,</span> <span class="k">transparent</span> <span class="m">50</span><span class="o">%,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span> <span class="m">50</span><span class="o">%,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span> <span class="m">100</span><span class="o">%</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="k">transparent</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">5</span><span class="o">,</span> <span class="k">transparent</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">5</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">5</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これに加えて，background-size を指定すると，次のような効果が得られます．</p>
+
+<h3>background-size: 2px;</h3>
+
+<p><strong class="l-block sample-stripe bgsize2"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">-moz-background-size</span><span class="o">:</span> <span class="nt">2px</span> <span class="nt">2px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">-webkit-background-size</span><span class="o">:</span> <span class="nt">2px</span> <span class="nt">2px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">background-size</span><span class="o">:</span> <span class="nt">2px</span> <span class="nt">2px</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>background-size: 5px;</h3>
+
+<p><strong class="l-block sample-stripe bgsize5"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">-moz-background-size</span><span class="o">:</span> <span class="nt">5px</span> <span class="nt">5px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">-webkit-background-size</span><span class="o">:</span> <span class="nt">5px</span> <span class="nt">5px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">background-size</span><span class="o">:</span> <span class="nt">5px</span> <span class="nt">5px</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>background-size: 20px;</h3>
+
+<p><strong class="l-block sample-stripe bgsize20"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">-moz-background-size</span><span class="o">:</span> <span class="nt">20px</span> <span class="nt">20px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">-webkit-background-size</span><span class="o">:</span> <span class="nt">20px</span> <span class="nt">20px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">background-size</span><span class="o">:</span> <span class="nt">20px</span> <span class="nt">20px</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p><style>
+strong.sample-stripe {
+  background-image: -moz-linear-gradient(left, transparent, transparent 50%, rgba(0,0,0,.5) 50%, rgba(0,0,0,.5) 100%);
+  background-image: -webkit-gradient(linear, left top, right top, from(transparent), color-stop(.5, transparent), color-stop(.5, rgba(0,0,0,.5)), to(rgba(0,0,0,.5)));
+}
+strong.bgsize2 {
+  -moz-background-size: 2px 2px;
+  -webkit-background-size: 2px 2px;
+  background-size: 2px 2px;
+}
+strong.bgsize5 {
+  -moz-background-size: 5px 5px;
+  -webkit-background-size: 5px 5px;
+  background-size: 5px 5px;
+}
+strong.bgsize20 {
+  -moz-background-size: 20px 20px;
+  -webkit-background-size: 20px 20px;
+  background-size: 20px 20px;
+}
+</style></p>
+
+
+<h2>組み合わせる</h2>
+
+<p>これまでの要領でごにょごにょすれば，よく見かける次のような効果を作り出すことができます．
+あとは，角度をつけたり，組み合わせたりするだけなので，基本的なところができてしまえば比較的簡単にできます．</p>
+
+<p><strong class="button stripe">stripe</strong><strong class="button slash">slash</strong><strong class="button check">check</strong><strong class="button dot">dot</strong></p>
+
+<p>詳しいコードは，<a href="http://jsdo.it/ckazu/hvCi">jsdo.it</a> で確認してみてください．</p>
+
+<p><style>
+strong.button {
+  display: inline-block;
+  margin: 4px;
+  padding: 2px 0.5em;
+  min-width: 75px;
+  color: white;
+  background-color: #ccc;
+
+  font: normal italic 1em/2em sans-serif;
+  text-align: center;
+  text-shadow: 1px 1px 2px #000;
+
+  border: 1px solid #333;
+  position: relative;
+  
+  -webkit-box-shadow: 0  1px  1px #fff inset,
+                      0 -2px  2px rgba( 0, 0, 0, .3) inset,
+                      1px 1px 2px #333;
+  -moz-box-shadow: 0  1px  1px #fff inset,
+                   0 -2px  2px rgba( 0, 0, 0, .3) inset,
+                   1px 1px 2px #333;
+
+  transition: background-color .5s ease, color .5s ease;
+  -webkit-transition: background-color .5s ease, color .5s ease;
+  -moz-transition: background-color .5s ease, color .5s ease;
+}
+strong.stripe {
+  background-image: -webkit-gradient(
+                      linear,
+                      left top,
+                      left bottom,
+                      from(rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(  0,  0,  0, .1)),
+                      to(rgba( 0, 0, 0, .1)));
+  background-image: -moz-linear-gradient(
+                      top,
+                      rgba(255,255,255, .1)   0,
+                      rgba(255,255,255, .1)  50%,
+                      rgba(  0,  0,  0, .1)  50%,
+                      rgba(  0,  0,  0, .1) 100%);
+  background-size: 16px;
+  -webkit-background-size: 16px;
+  -moz-background-size: 16px;
+}
+strong.slash {
+  background-color: #c99;
+  background-image: -webkit-gradient(
+                      linear,
+                      left top,
+                      right bottom,
+                      from(           rgba(  0,  0,  0, .1)),
+                      color-stop(.05, rgba(  0,  0,  0, .1)),
+                      color-stop(.05, rgba(255,255,255, .1)),
+                      color-stop(.45, rgba(255,255,255, .1)),
+                      color-stop(.45, rgba(  0,  0,  0, .1)),
+                      color-stop(.55, rgba(  0,  0,  0, .1)),
+                      color-stop(.55, rgba(255,255,255, .1)),
+                      color-stop(.95, rgba(255,255,255, .1)),
+                      color-stop(.95, rgba(  0,  0,  0, .1)),
+                      to(             rgba(  0,  0,  0, .1)));
+
+  background-image: -moz-linear-gradient(
+                      -45deg,
+                      rgba(  0,  0,  0, .1)  0,
+                      rgba(  0,  0,  0, .1)   5%,
+                      rgba(255,255,255, .1)   5%,
+                      rgba(255,255,255, .1)  45%,
+                      rgba(  0,  0,  0, .1)  45%,
+                      rgba(  0,  0,  0, .1)  55%,
+                      rgba(255,255,255, .1)  55%,
+                      rgba(255,255,255, .1)  95%,
+                      rgba(  0,  0,  0, .1)  95%,
+                      rgba(  0,  0,  0, .1) 100%);
+  background-size: 5px 5px;
+  -webkit-background-size: 5px 5px;
+  -moz-background-size: 5px 5px;
+}
+strong.check {
+  background-color: #9c9;
+  background-image: -webkit-gradient(
+                      linear,
+                      left top,
+                      left bottom,
+                      from(rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(  0,  0,  0, .1)),
+                      to(rgba( 0, 0, 0, .1))),
+                   -webkit-gradient(
+                      linear,
+                      left top,
+                      right top,
+                      from(rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(  0,  0,  0, .1)),
+                      to(rgba( 0, 0, 0, .1)));
+  background-image: -moz-linear-gradient(
+                      top,
+                      rgba(255,255,255, .1)   0,
+                      rgba(255,255,255, .1)  50%,
+                      rgba(  0,  0,  0, .1)  50%,
+                      rgba(  0,  0,  0, .1) 100%),
+                    -moz-linear-gradient(
+                      left,
+                      rgba(255,255,255, .1)   0,
+                      rgba(255,255,255, .1)  50%,
+                      rgba(  0,  0,  0, .1)  50%,
+                      rgba(  0,  0,  0, .1) 100%);
+  background-size: 8px 8px;
+  -webkit-background-size: 8px 8px;
+  -moz-background-size: 8px 8px;
+}
+
+strong.dot {
+  background-color: #99c;
+  background-image: -webkit-gradient(
+                      radial,
+                      center center, 0,
+                      center center, 3,
+                      from(rgba(255,255,255, .1)),
+                      color-stop(.75, rgba(255,255,255, .1)),
+                      to(rgba( 0, 0, 0, .1)));
+  background-image: -moz-radial-gradient(
+                      center,
+                      circle closest-side,
+                      rgba(255,255,255, .1),
+                      rgba(255,255,255, .1) 50%,
+                      rgba( 0, 0, 0, .1) 50%,
+                      rgba( 0, 0, 0, .1));
+  background-size: 10px 10px;
+  -webkit-background-size: 10px 10px;
+  -moz-background-size: 10px 10px;
+}
+</style></p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ckazu</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-21T00:00:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ckazu.github.com/blog/2011/03/21/css3-jsdo-it-CSS3/" data-via="ckazu" data-counturl="http://ckazu.github.com/blog/2011/03/21/css3-jsdo-it-CSS3/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/03/19/css3-CSS3/" title="Previous Post: CSS3で水滴のような形を描く">&laquo; CSS3で水滴のような形を描く</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/05/23/ruby-rails-rails-Mix-in/" title="Next Post: rails で Mix-in するときにすでにあるメソッドをオーバーライドする">rails で Mix-in するときにすでにあるメソッドをオーバーライドする &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2011/12/06/ruby-rails-rake-notes-spec-js-coffee-scss-haml-slim/">rake notes で，spec, js, coffee, scss, haml, slim のファイルも対象にする</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/23/ruby-rails-rails-Mix-in/">rails で Mix-in するときにすでにあるメソッドをオーバーライドする</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/21/css3-jsdo-it-CSS3/">CSS3のみで色々な背景パターンを描画する</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/19/css3-CSS3/">CSS3で水滴のような形を描く</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ckazu", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ckazu" class="twitter-follow-button" data-show-count="false">Follow @ckazu</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - ckazu -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

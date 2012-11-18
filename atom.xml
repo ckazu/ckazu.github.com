@@ -1,0 +1,1173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[ckazu.github.com]]></title>
+  <link href="http://ckazu.github.com/atom.xml" rel="self"/>
+  <link href="http://ckazu.github.com/"/>
+  <updated>2012-11-18T15:26:15+09:00</updated>
+  <id>http://ckazu.github.com/</id>
+  <author>
+    <name><![CDATA[ckazu]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[rake notes で，spec, js, coffee, scss, haml, slim のファイルも対象にする]]></title>
+    <link href="http://ckazu.github.com/blog/2011/12/06/ruby-rails-rake-notes-spec-js-coffee-scss-haml-slim/"/>
+    <updated>2011-12-06T00:00:00+09:00</updated>
+    <id>http://ckazu.github.com/blog/2011/12/06/ruby-rails-rake-notes-spec-js-coffee-scss-haml-slim</id>
+    <content type="html"><![CDATA[<figure class='code'><figcaption><span>SourceAnnotationExtractor.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SourceAnnotationExtractor</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">find_with_custom_directories</span>
+</span><span class='line'>    <span class="n">find_without_custom_directories</span><span class="p">(</span><span class="sx">%w|app lib spec|</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">alias_method_chain</span> <span class="ss">:find</span><span class="p">,</span> <span class="ss">:custom_directories</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">find_in_with_custom_files</span><span class="p">(</span><span class="n">dir</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">results</span> <span class="o">=</span> <span class="n">find_in_without_custom_files</span><span class="p">(</span><span class="n">dir</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">Dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">dir</span><span class="si">}</span><span class="s2">/*&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class='line'>      <span class="k">next</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">==</span> <span class="sc">?.</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">directory?</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">results</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">find_in</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+</span><span class='line'>      <span class="k">elsif</span> <span class="n">item</span> <span class="o">=~</span> <span class="sr">/\.(coffee)$/</span>
+</span><span class='line'>        <span class="n">results</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extract_annotations_from</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="sr">/#\s*\[?(</span><span class="si">#{</span><span class="n">tag</span><span class="si">}</span><span class="sr">)\]?\s*:?\s*(.*)$/</span><span class="p">))</span>
+</span><span class='line'>      <span class="k">elsif</span> <span class="n">item</span> <span class="o">=~</span> <span class="sr">/\.(js|scss)$/</span>
+</span><span class='line'>        <span class="n">results</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extract_annotations_from</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="sr">/\/\/\s*\[?(</span><span class="si">#{</span><span class="n">tag</span><span class="si">}</span><span class="sr">)\]?\s*:?\s*(.*)$/</span><span class="p">))</span>
+</span><span class='line'>      <span class="k">elsif</span> <span class="n">item</span> <span class="o">=~</span> <span class="sr">/\.(haml)$/</span>
+</span><span class='line'>        <span class="n">results</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extract_annotations_from</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="sr">/[\/|(\-\#)]\s*\[?(</span><span class="si">#{</span><span class="n">tag</span><span class="si">}</span><span class="sr">)\]?\s*:?\s*(.*)$/</span><span class="p">))</span>
+</span><span class='line'>      <span class="k">elsif</span> <span class="n">item</span> <span class="o">=~</span> <span class="sr">/\.(slim)$/</span>
+</span><span class='line'>        <span class="n">results</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extract_annotations_from</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="sr">/\/\!?\s*\[?(</span><span class="si">#{</span><span class="n">tag</span><span class="si">}</span><span class="sr">)\]?\s*:?\s*(.*)$/</span><span class="p">))</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">results</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">alias_method_chain</span> <span class="ss">:find_in</span><span class="p">,</span> <span class="ss">:custom_files</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[rails で Mix-in するときにすでにあるメソッドをオーバーライドする]]></title>
+    <link href="http://ckazu.github.com/blog/2011/05/23/ruby-rails-rails-Mix-in/"/>
+    <updated>2011-05-23T00:00:00+09:00</updated>
+    <id>http://ckazu.github.com/blog/2011/05/23/ruby-rails-rails-Mix-in</id>
+    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">NewMethod</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">mod</span><span class="o">.</span><span class="n">class_eval</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">alias_method_chain</span> <span class="ss">:method</span><span class="p">,</span> <span class="ss">:new_method</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">method_with_new_method</span>
+</span><span class='line'>    <span class="n">method_without_new_method</span>
+</span><span class='line'>    <span class="s1">&#39;new method&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Origin</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">method</span>
+</span><span class='line'>    <span class="s1">&#39;origin method&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">NewMethod</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="no">Origin</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">method</span>    <span class="c1">#=&gt; new method</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>include をメソッドの後に書かないといけないのが微妙</p>
+
+<!-- more -->
+
+
+<p>ちょっと補足</p>
+
+<h2>普通の include</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">NewMethod</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">method</span>
+</span><span class='line'>    <span class="s1">&#39;new method&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Origin</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">NewMethod</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="no">Origin</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">method</span>          <span class="c1"># =&gt; new method</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>同名メソッドがある場合</h2>
+
+<p>モジュールのメソッドは呼ばれない．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">NewMethod</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">method</span>
+</span><span class='line'>    <span class="s1">&#39;new method&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Origin</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">NewMethod</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">method</span>
+</span><span class='line'>    <span class="s1">&#39;origin method&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="no">Origin</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">method</span>          <span class="c1"># =&gt; origin method</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>include の順番を変えた例</h2>
+
+<p>メソッドの定義順を変えても駄目．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">NewMethod</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">method</span>
+</span><span class='line'>    <span class="s1">&#39;new method&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Origin</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">method</span>
+</span><span class='line'>    <span class="s1">&#39;origin method&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">NewMethod</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="no">Origin</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">method</span>          <span class="c1"># =&gt; origin method</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>結局，include しても，最初に見つかるメソッドが呼ばれるだけ．
+ということで，冒頭のコードのように method_chain を使って定義．</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CSS3のみで色々な背景パターンを描画する]]></title>
+    <link href="http://ckazu.github.com/blog/2011/03/21/css3-jsdo-it-CSS3/"/>
+    <updated>2011-03-21T00:00:00+09:00</updated>
+    <id>http://ckazu.github.com/blog/2011/03/21/css3-jsdo-it-CSS3</id>
+    <content type="html"><![CDATA[<script type="text/javascript" src="http://jsdo.it/blogparts/hvCi/js?view=design"></script>
+
+
+<p class="ttlBpJsdoit" style="width: 465px; margin: 0; text-align: right; font-size: 11px;"><a href="http://jsdo.it/ckazu/hvCi" title="CSS3 で作る背景パターン">CSS3 で作る背景パターン - jsdo.it - share JavaScript, HTML5 and CSS</a></p>
+
+
+
+
+<!-- more -->
+
+
+<h2>gradient()</h2>
+
+<p>background-image に，gradient() を指定するとグラデーションを実現できます．</p>
+
+<p>現状では，webkit, moz で指定方法が異なります．
+webkit のほうが面倒ですね．webkit の書式は変更するとか何とか．．．</p>
+
+<p><strong class="rainbow"></strong></p>
+
+<p><style>
+strong.rainbow {
+  display: inline-block;
+  width: 300px;
+  height: 40px;
+  border: 1px solid #333;
+  background: -moz-linear-gradient(left, red, orange, yellow, green, blue, navy, purple);
+  background: -webkit-gradient(linear, left top, right top, from(red), color-stop(.14, orange), color-stop(.28, yellow), color-stop(.42, green), color-stop(.56, blue), color-stop(.68, navy), to(purple));
+}
+</style></p>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.rainbow</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">left</span><span class="o">,</span> <span class="nb">red</span><span class="o">,</span> <span class="nb">orange</span><span class="o">,</span> <span class="nb">yellow</span><span class="o">,</span> <span class="nb">green</span><span class="o">,</span> <span class="nb">blue</span><span class="o">,</span> <span class="nb">navy</span><span class="o">,</span> <span class="nb">purple</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">background</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="nb">red</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">14</span><span class="o">,</span> <span class="nb">orange</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">28</span><span class="o">,</span> <span class="nb">yellow</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">42</span><span class="o">,</span> <span class="nb">green</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">56</span><span class="o">,</span> <span class="nb">blue</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">68</span><span class="o">,</span> <span class="nb">navy</span><span class="p">)</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="nb">purple</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>rgba で透明度を指定する</h2>
+
+<p>rgba() を用いると透明度を設定することができます．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nt">rgba</span><span class="o">(&lt;</span><span class="nt">red</span><span class="o">&gt;,</span> <span class="o">&lt;</span><span class="nt">green</span><span class="o">&gt;,</span> <span class="o">&lt;</span><span class="nt">blue</span><span class="o">&gt;,</span> <span class="o">&lt;</span><span class="nt">alphavalue</span><span class="o">&gt;);</span>
+</span><span class='line'><span class="err">ただし，</span><span class="nt">red</span><span class="o">,</span> <span class="nt">green</span><span class="o">,</span> <span class="nt">blue</span> <span class="err">は</span> <span class="nt">0-255</span> <span class="err">の値，</span><span class="nt">alphavalue</span> <span class="err">は</span> <span class="nt">0-1</span> <span class="err">の値．</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これを利用して，background-color で設定した色を background-image に重ねることができます．</p>
+
+<p>たとえば，これらに</p>
+
+<p><strong class="block red"></strong><strong class="block green"></strong><strong class="block blue"></strong></p>
+
+<p>これを重ねると，</p>
+
+<p><strong class="block rgba-sample"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.gradation</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">bottom</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こうなります．</p>
+
+<p><strong class="block rgba-sample red"></strong><strong class="block rgba-sample green"></strong><strong class="block rgba-sample blue"></strong></p>
+
+<p>最初から赤や緑のなどのグラデーションを用意しておけば良いように思えますが，半透明のグラデーションなりのスタイルを用意しておくだけで，使い回しが効くので便利です．</p>
+
+<p><style>
+strong.block {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin: 0 2px;
+  border: 1px solid #333;
+}
+strong.rgba-sample { background-image: -moz-linear-gradient(top, rgba( 0, 0, 0, .5), rgba(255,255,255, .5)); }
+strong.rgba-sample { background-image: -webkit-gradient(linear, left top, left bottom, from(rgba( 0, 0, 0, .5)), to(rgba(255,255,255, .5))); }
+
+strong.red { background-color: red; }
+strong.green { background-color: green; }
+strong.blue { background-color: blue; }
+</style></p>
+
+
+<h2>複数のパターンを重ねる</h2>
+
+<p>CSS3 では，background-image には，複数の画像を指定できるようになりました．</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">background-image</span><span class="o">:</span> <span class="nt">url</span><span class="o">(</span><span class="nt">a</span><span class="nc">.png</span><span class="o">),</span> <span class="nt">url</span><span class="o">(</span><span class="nt">b</span><span class="nc">.png</span><span class="o">),</span> <span class="nt">url</span><span class="o">(</span><span class="nt">c</span><span class="nc">.png</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここには，もちろん gradient() も指定できます．</p>
+
+<p>たとえば，次の3種類のグラデーションを，</p>
+
+<p><strong class="l-block g-red"></strong><strong class="l-block g-green"></strong><strong class="l-block g-blue"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.red</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span>  <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nc">.green</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">right</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nc">.blue</span>  <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">bottom</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すべて混ぜると，次のようになります．</p>
+
+<p>すべてのグラデーションが混ざっているのが分かるでしょうか．</p>
+
+<p><strong class="l-block multi-gradient"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.mixes</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">))</span><span class="o">,</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">right</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">))</span><span class="o">,</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)))</span><span class="o">,</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)))</span><span class="o">,</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">left</span> <span class="k">bottom</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span>  <span class="m">0</span><span class="o">,</span>  <span class="m">0</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">1</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p><style>
+strong.l-block {
+  display: inline-block;
+  width: 200px;
+  height: 40px;
+  margin: 0 2px;
+  border: 1px solid #333;
+}
+strong.g-red   {
+  background-image: -moz-linear-gradient(top left,  rgba(255,  0,  0, .5), rgba(255,255,255,.1));
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255,  0,  0, .5)), to(rgba(255,255,255,.1)));
+}
+strong.g-green {
+  background-image: -moz-linear-gradient(top right, rgba(  0,255,  0, .5), rgba(255,255,255,.1));
+  background-image: -webkit-gradient(linear, right top, left top, from(rgba(  0,255,  0, .5)), to(rgba(255,255,255,.1)));
+}
+strong.g-blue  {
+  background-image: -moz-linear-gradient(top, rgba(  0,  0,255, .5), rgba(255,255,255,.1));
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(  0,  0,255, .5)), to(rgba(255,255,255,.1)));
+}
+strong.multi-gradient {
+  background-image: -moz-linear-gradient(top left,  rgba(255,  0,  0, .5), rgba(255,255,255,.1)),
+                    -moz-linear-gradient(top right, rgba(  0,255,  0, .5), rgba(255,255,255,.1)),
+                    -moz-linear-gradient(top,       rgba(  0,  0,255, .5), rgba(255,255,255,.1));
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255,  0,  0, .5)), to(rgba(255,255,255,.1))),
+                                  -webkit-gradient(linear, right top, left top, from(rgba(  0,255,  0, .5)), to(rgba(255,255,255,.1))),
+                                  -webkit-gradient(linear, left top, left bottom, from(rgba(  0,  0,255, .5)), to(rgba(255,255,255,.1)));
+}
+</style></p>
+
+
+<h2>gradient() でストライプを作る</h2>
+
+<p>また，gradient の指定を工夫すると，このようなパターンを作ることができます．</p>
+
+<p><strong class="block sample-stripe"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.stripe</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">left</span><span class="o">,</span> <span class="k">transparent</span><span class="o">,</span> <span class="k">transparent</span> <span class="m">50</span><span class="o">%,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span> <span class="m">50</span><span class="o">%,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span> <span class="m">100</span><span class="o">%</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">background-image</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="n">linear</span><span class="o">,</span> <span class="k">left</span> <span class="k">top</span><span class="o">,</span> <span class="k">right</span> <span class="k">top</span><span class="o">,</span> <span class="n">from</span><span class="p">(</span><span class="k">transparent</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">5</span><span class="o">,</span> <span class="k">transparent</span><span class="p">)</span><span class="o">,</span> <span class="k">color</span><span class="o">-</span><span class="n">stop</span><span class="p">(</span><span class="o">.</span><span class="m">5</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">5</span><span class="p">))</span><span class="o">,</span> <span class="n">to</span><span class="p">(</span><span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">5</span><span class="p">)));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これに加えて，background-size を指定すると，次のような効果が得られます．</p>
+
+<h3>background-size: 2px;</h3>
+
+<p><strong class="l-block sample-stripe bgsize2"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">-moz-background-size</span><span class="o">:</span> <span class="nt">2px</span> <span class="nt">2px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">-webkit-background-size</span><span class="o">:</span> <span class="nt">2px</span> <span class="nt">2px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">background-size</span><span class="o">:</span> <span class="nt">2px</span> <span class="nt">2px</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>background-size: 5px;</h3>
+
+<p><strong class="l-block sample-stripe bgsize5"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">-moz-background-size</span><span class="o">:</span> <span class="nt">5px</span> <span class="nt">5px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">-webkit-background-size</span><span class="o">:</span> <span class="nt">5px</span> <span class="nt">5px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">background-size</span><span class="o">:</span> <span class="nt">5px</span> <span class="nt">5px</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>background-size: 20px;</h3>
+
+<p><strong class="l-block sample-stripe bgsize20"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">-moz-background-size</span><span class="o">:</span> <span class="nt">20px</span> <span class="nt">20px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">-webkit-background-size</span><span class="o">:</span> <span class="nt">20px</span> <span class="nt">20px</span><span class="o">;</span>
+</span><span class='line'>  <span class="nt">background-size</span><span class="o">:</span> <span class="nt">20px</span> <span class="nt">20px</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p><style>
+strong.sample-stripe {
+  background-image: -moz-linear-gradient(left, transparent, transparent 50%, rgba(0,0,0,.5) 50%, rgba(0,0,0,.5) 100%);
+  background-image: -webkit-gradient(linear, left top, right top, from(transparent), color-stop(.5, transparent), color-stop(.5, rgba(0,0,0,.5)), to(rgba(0,0,0,.5)));
+}
+strong.bgsize2 {
+  -moz-background-size: 2px 2px;
+  -webkit-background-size: 2px 2px;
+  background-size: 2px 2px;
+}
+strong.bgsize5 {
+  -moz-background-size: 5px 5px;
+  -webkit-background-size: 5px 5px;
+  background-size: 5px 5px;
+}
+strong.bgsize20 {
+  -moz-background-size: 20px 20px;
+  -webkit-background-size: 20px 20px;
+  background-size: 20px 20px;
+}
+</style></p>
+
+
+<h2>組み合わせる</h2>
+
+<p>これまでの要領でごにょごにょすれば，よく見かける次のような効果を作り出すことができます．
+あとは，角度をつけたり，組み合わせたりするだけなので，基本的なところができてしまえば比較的簡単にできます．</p>
+
+<p><strong class="button stripe">stripe</strong><strong class="button slash">slash</strong><strong class="button check">check</strong><strong class="button dot">dot</strong></p>
+
+<p>詳しいコードは，<a href="http://jsdo.it/ckazu/hvCi">jsdo.it</a> で確認してみてください．</p>
+
+<p><style>
+strong.button {
+  display: inline-block;
+  margin: 4px;
+  padding: 2px 0.5em;
+  min-width: 75px;
+  color: white;
+  background-color: #ccc;
+
+  font: normal italic 1em/2em sans-serif;
+  text-align: center;
+  text-shadow: 1px 1px 2px #000;
+
+  border: 1px solid #333;
+  position: relative;
+  
+  -webkit-box-shadow: 0  1px  1px #fff inset,
+                      0 -2px  2px rgba( 0, 0, 0, .3) inset,
+                      1px 1px 2px #333;
+  -moz-box-shadow: 0  1px  1px #fff inset,
+                   0 -2px  2px rgba( 0, 0, 0, .3) inset,
+                   1px 1px 2px #333;
+
+  transition: background-color .5s ease, color .5s ease;
+  -webkit-transition: background-color .5s ease, color .5s ease;
+  -moz-transition: background-color .5s ease, color .5s ease;
+}
+strong.stripe {
+  background-image: -webkit-gradient(
+                      linear,
+                      left top,
+                      left bottom,
+                      from(rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(  0,  0,  0, .1)),
+                      to(rgba( 0, 0, 0, .1)));
+  background-image: -moz-linear-gradient(
+                      top,
+                      rgba(255,255,255, .1)   0,
+                      rgba(255,255,255, .1)  50%,
+                      rgba(  0,  0,  0, .1)  50%,
+                      rgba(  0,  0,  0, .1) 100%);
+  background-size: 16px;
+  -webkit-background-size: 16px;
+  -moz-background-size: 16px;
+}
+strong.slash {
+  background-color: #c99;
+  background-image: -webkit-gradient(
+                      linear,
+                      left top,
+                      right bottom,
+                      from(           rgba(  0,  0,  0, .1)),
+                      color-stop(.05, rgba(  0,  0,  0, .1)),
+                      color-stop(.05, rgba(255,255,255, .1)),
+                      color-stop(.45, rgba(255,255,255, .1)),
+                      color-stop(.45, rgba(  0,  0,  0, .1)),
+                      color-stop(.55, rgba(  0,  0,  0, .1)),
+                      color-stop(.55, rgba(255,255,255, .1)),
+                      color-stop(.95, rgba(255,255,255, .1)),
+                      color-stop(.95, rgba(  0,  0,  0, .1)),
+                      to(             rgba(  0,  0,  0, .1)));
+
+  background-image: -moz-linear-gradient(
+                      -45deg,
+                      rgba(  0,  0,  0, .1)  0,
+                      rgba(  0,  0,  0, .1)   5%,
+                      rgba(255,255,255, .1)   5%,
+                      rgba(255,255,255, .1)  45%,
+                      rgba(  0,  0,  0, .1)  45%,
+                      rgba(  0,  0,  0, .1)  55%,
+                      rgba(255,255,255, .1)  55%,
+                      rgba(255,255,255, .1)  95%,
+                      rgba(  0,  0,  0, .1)  95%,
+                      rgba(  0,  0,  0, .1) 100%);
+  background-size: 5px 5px;
+  -webkit-background-size: 5px 5px;
+  -moz-background-size: 5px 5px;
+}
+strong.check {
+  background-color: #9c9;
+  background-image: -webkit-gradient(
+                      linear,
+                      left top,
+                      left bottom,
+                      from(rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(  0,  0,  0, .1)),
+                      to(rgba( 0, 0, 0, .1))),
+                   -webkit-gradient(
+                      linear,
+                      left top,
+                      right top,
+                      from(rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(255,255,255, .1)),
+                      color-stop(.5, rgba(  0,  0,  0, .1)),
+                      to(rgba( 0, 0, 0, .1)));
+  background-image: -moz-linear-gradient(
+                      top,
+                      rgba(255,255,255, .1)   0,
+                      rgba(255,255,255, .1)  50%,
+                      rgba(  0,  0,  0, .1)  50%,
+                      rgba(  0,  0,  0, .1) 100%),
+                    -moz-linear-gradient(
+                      left,
+                      rgba(255,255,255, .1)   0,
+                      rgba(255,255,255, .1)  50%,
+                      rgba(  0,  0,  0, .1)  50%,
+                      rgba(  0,  0,  0, .1) 100%);
+  background-size: 8px 8px;
+  -webkit-background-size: 8px 8px;
+  -moz-background-size: 8px 8px;
+}
+
+strong.dot {
+  background-color: #99c;
+  background-image: -webkit-gradient(
+                      radial,
+                      center center, 0,
+                      center center, 3,
+                      from(rgba(255,255,255, .1)),
+                      color-stop(.75, rgba(255,255,255, .1)),
+                      to(rgba( 0, 0, 0, .1)));
+  background-image: -moz-radial-gradient(
+                      center,
+                      circle closest-side,
+                      rgba(255,255,255, .1),
+                      rgba(255,255,255, .1) 50%,
+                      rgba( 0, 0, 0, .1) 50%,
+                      rgba( 0, 0, 0, .1));
+  background-size: 10px 10px;
+  -webkit-background-size: 10px 10px;
+  -moz-background-size: 10px 10px;
+}
+</style></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CSS3で水滴のような形を描く]]></title>
+    <link href="http://ckazu.github.com/blog/2011/03/19/css3-CSS3/"/>
+    <updated>2011-03-19T00:00:00+09:00</updated>
+    <id>http://ckazu.github.com/blog/2011/03/19/css3-CSS3</id>
+    <content type="html"><![CDATA[<p>CSS3 面白いですね．</p>
+
+<p>今までは思いつかなかったようなことができるようになっています．</p>
+
+<p>その CSS3 を使って，次のような水滴（のようなもの）を CSS だけで作ってみます．</p>
+
+<script type="text/javascript" src="http://jsdo.it/blogparts/cSGk/js"></script>
+
+
+<p>なお，動作確認は，chrome, firefox でしか行っていませんので，あしからず．</p>
+
+<p>IE での動作は全く保証しません．</p>
+
+<!-- more -->
+
+
+<h2>border-radius を使って円を描く</h2>
+
+<p>一般的には角丸を実現するための border-radius ですが，目一杯のサイズを指定すると，円を描画することができます．</p>
+
+<p><strong class="circle"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;circle&quot;</span><span class="nt">&gt;</span>円<span class="nt">&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nc">.circle</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">width</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">height</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">background</span><span class="o">:</span> <span class="m">#ccf</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">border</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="m">#99f</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>border-radius でそれぞれの角の半径を指定する</h2>
+
+<p>border-radius は4つの角のそれぞれの角の半径を指定でき，また，楕円としてその長半径，短半径を指定することができます．</p>
+
+<p><strong class="ellipse"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;ellipse&quot;</span><span class="nt">&gt;</span>楕円<span class="nt">&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nc">.ellipse</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">width</span><span class="o">:</span> <span class="m">60px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">height</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">border</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="m">#33f</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="m">#ccf</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">20px</span> <span class="o">/</span> <span class="m">30px</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">20px</span> <span class="o">/</span> <span class="m">30px</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">20px</span> <span class="o">/</span> <span class="m">30px</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong class="rounded"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;rounded&quot;</span><span class="nt">&gt;</span>曲面<span class="nt">&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nc">.rounded</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">width</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">height</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">border</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="m">#33f</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="m">#ccf</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">20px</span> <span class="m">5px</span> <span class="m">1px</span> <span class="m">50px</span> <span class="o">/</span> <span class="m">5px</span> <span class="m">5px</span> <span class="m">1px</span> <span class="m">20px</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">20px</span> <span class="m">5px</span> <span class="m">1px</span> <span class="m">40px</span> <span class="o">/</span> <span class="m">5px</span> <span class="m">5px</span> <span class="m">1px</span> <span class="m">20px</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">20px</span> <span class="m">5px</span> <span class="m">1px</span> <span class="m">40px</span> <span class="o">/</span> <span class="m">5px</span> <span class="m">5px</span> <span class="m">1px</span> <span class="m">20px</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>指定方法，対応状況などは以下を参考に．</p>
+
+<ul>
+<li>cite: <a href="http://www.w3.org/TR/css3-background/#the-border-radius">http://www.w3.org/TR/css3-background/#the-border-radius</a></li>
+<li>cite: <a href="https://developer.mozilla.org/en/CSS/border-radius">https://developer.mozilla.org/en/CSS/border-radius</a></li>
+</ul>
+
+
+<h2>水滴っぽい形を作る</h2>
+
+<p>さて，水滴の形を表現するには，上部を上に引っ張った形を作る必要がありますが，border-radius では，上下左右の角を丸めることしかできません．</p>
+
+<p>そこで，とりあえず，左上を除いた3つの角を丸め，左上にとんがった形を作ります．</p>
+
+<p><strong class="pre-drop-shape"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;pre-drop-shape&quot;</span><span class="nt">&gt;</span>水滴っぽい形<span class="nt">&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nc">.pre-drop-shape</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">width</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">height</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">border</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="m">#33f</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="m">#ccf</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>傾ける</h2>
+
+<p>とりあえず，左上がとんがった形を作ることができました．</p>
+
+<p>これを，transform を使用し45度傾けて，左上が真上になるように回転させます．</p>
+
+<p><strong class="drop-shape"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;drop-shape&quot;</span><span class="nt">&gt;</span>水滴っぽい形<span class="nt">&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nc">.drop-shape</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">width</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">height</span><span class="o">:</span> <span class="m">40px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="m">#ccf</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">border</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="m">#33f</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>グラデーションなどを施す</h2>
+
+<p>box-shadow や background に linear-gradient などを使い，それっぽく仕上げます（適当）．</p>
+
+<p><strong class="drop"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;drop&quot;</span><span class="nt">&gt;</span>水滴?<span class="nt">&lt;/p&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nc">.drop</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">width</span><span class="o">:</span> <span class="m">30px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">height</span><span class="o">:</span> <span class="m">30px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">border</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="m">#ccc</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">75</span><span class="p">)</span> <span class="m">100</span><span class="o">%</span><span class="p">)</span><span class="o">,</span> <span class="m">#39f</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="k">inset</span> <span class="m">2px</span> <span class="m">-2px</span> <span class="m">3px</span> <span class="m">#fff</span><span class="o">,</span> <span class="k">inset</span> <span class="m">-1px</span> <span class="m">1px</span> <span class="m">1px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">2</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">75</span><span class="p">)</span> <span class="m">100</span><span class="o">%</span><span class="p">)</span><span class="o">,</span> <span class="m">#39f</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="k">inset</span> <span class="m">2px</span> <span class="m">-2px</span> <span class="m">3px</span> <span class="m">#fff</span><span class="o">,</span> <span class="k">inset</span> <span class="m">-1px</span> <span class="m">1px</span> <span class="m">1px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">2</span><span class="p">);</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">75</span><span class="p">)</span> <span class="m">100</span><span class="o">%</span><span class="p">)</span><span class="o">,</span> <span class="m">#39f</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="k">inset</span> <span class="m">2px</span> <span class="m">-2px</span> <span class="m">3px</span> <span class="m">#fff</span><span class="o">,</span> <span class="k">inset</span> <span class="m">-1px</span> <span class="m">1px</span> <span class="m">1px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">2</span><span class="p">);</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>:hover, transition でちょっとしたアニメーションをさせる</h2>
+
+<p>ちょっと手を加えると，ナビゲーションなどに使えるかもしれません．</p>
+
+<p>※ firefox3 では transition が動作しません．</p>
+
+<p><strong class="list-drop black"></strong><strong class="list-drop white"></strong><strong class="list-drop red"></strong><strong class="list-drop green"></strong><strong class="list-drop blue"></strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul&gt;</span>
+</span><span class='line'><span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;drop black&quot;</span><span class="nt">&gt;</span>black<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;drop white&quot;</span><span class="nt">&gt;</span>white<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;drop red&quot;</span><span class="nt">&gt;</span>red<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;drop green&quot;</span><span class="nt">&gt;</span>green<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;drop blue&quot;</span><span class="nt">&gt;</span>blue<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/il&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nc">.drop</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">width</span><span class="o">:</span> <span class="m">30px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">height</span><span class="o">:</span> <span class="m">30px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">margin</span><span class="o">:</span> <span class="m">4px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="o">-</span><span class="k">block</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">75</span><span class="p">)</span> <span class="m">100</span><span class="o">%</span><span class="p">)</span><span class="o">,</span> <span class="m">#39f</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">background</span><span class="o">:</span> <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">linear</span><span class="o">-</span><span class="n">gradient</span><span class="p">(</span><span class="k">top</span> <span class="k">left</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,.</span><span class="m">5</span><span class="p">)</span><span class="o">,</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span> <span class="o">.</span><span class="m">75</span><span class="p">)</span> <span class="m">100</span><span class="o">%</span><span class="p">)</span><span class="o">,</span> <span class="m">#39f</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">border</span><span class="o">:</span> <span class="m">1px</span> <span class="k">solid</span> <span class="m">#ccc</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="k">inset</span> <span class="m">2px</span> <span class="m">-2px</span> <span class="m">3px</span> <span class="m">#fff</span><span class="o">,</span> <span class="k">inset</span> <span class="m">-1px</span> <span class="m">1px</span> <span class="m">1px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">2</span><span class="p">)</span><span class="o">,</span> <span class="m">2px</span> <span class="m">0</span> <span class="m">2px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">3</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">transition</span><span class="o">:</span> <span class="n">all</span> <span class="n">linear</span> <span class="m">.1s</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="k">inset</span> <span class="m">2px</span> <span class="m">-2px</span> <span class="m">3px</span> <span class="m">#fff</span><span class="o">,</span> <span class="k">inset</span> <span class="m">-1px</span> <span class="m">1px</span> <span class="m">1px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">2</span><span class="p">)</span><span class="o">,</span> <span class="m">2px</span> <span class="m">0</span> <span class="m">2px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">3</span><span class="p">);</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="n">all</span> <span class="n">linear</span> <span class="m">.1s</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">box</span><span class="o">-</span><span class="n">shadow</span><span class="o">:</span> <span class="k">inset</span> <span class="m">2px</span> <span class="m">-2px</span> <span class="m">3px</span> <span class="m">#fff</span><span class="o">,</span> <span class="k">inset</span> <span class="m">-1px</span> <span class="m">1px</span> <span class="m">1px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span><span class="m">255</span><span class="o">,</span> <span class="o">.</span><span class="m">2</span><span class="p">)</span><span class="o">,</span> <span class="m">2px</span> <span class="m">0</span> <span class="m">2px</span> <span class="n">rgba</span><span class="p">(</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,</span><span class="m">0</span><span class="o">,.</span><span class="m">3</span><span class="p">);</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transform</span><span class="o">:</span> <span class="n">rotate</span><span class="p">(</span><span class="m">45</span><span class="n">deg</span><span class="p">);</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="n">all</span> <span class="n">linear</span> <span class="m">.1s</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nc">.drop</span><span class="nd">:hover</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">top</span><span class="o">:</span> <span class="m">3px</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nc">.black</span> <span class="p">{</span> <span class="k">background-color</span><span class="o">:</span> <span class="m">#666</span><span class="p">;</span> <span class="k">border-color</span><span class="o">:</span> <span class="m">#999</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="nc">.white</span> <span class="p">{</span> <span class="k">background-color</span><span class="o">:</span> <span class="m">#ccc</span><span class="p">;</span> <span class="k">border-color</span><span class="o">:</span> <span class="m">#999</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="nc">.red</span>   <span class="p">{</span> <span class="k">background-color</span><span class="o">:</span> <span class="m">#c00</span><span class="p">;</span> <span class="k">border-color</span><span class="o">:</span> <span class="m">#900</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="nc">.green</span> <span class="p">{</span> <span class="k">background-color</span><span class="o">:</span> <span class="m">#0c0</span><span class="p">;</span> <span class="k">border-color</span><span class="o">:</span> <span class="m">#090</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="nc">.blue</span>  <span class="p">{</span> <span class="k">background-color</span><span class="o">:</span> <span class="m">#00c</span><span class="p">;</span> <span class="k">border-color</span><span class="o">:</span> <span class="m">#009</span><span class="p">;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p><style>
+  strong.circle {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #33f;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    display: block;
+    background: #ccf;
+  }
+
+  strong.rounded {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #33f;
+    border-radius: 20px 5px 1px 40px / 5px 5px 1px 20px;
+    -moz-border-radius: 20px 5px 1px 40px / 5px 5px 1px 20px;
+    display: block;
+    background: #ccf;
+  }
+
+  strong.ellipse {
+    width: 60px;
+    height: 40px;
+    border: 1px solid #33f;
+    border-radius: 30px/20px;
+    -moz-border-radius: 30px/20px;
+    display: block;
+    background: #ccf;
+  }
+
+  strong.pre-drop-shape {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #33f;
+    border-radius: 10% 50% 50% 50%;
+    -moz-border-radius: 10% 50% 50% 50%;
+    display: block;
+    background: #ccf;
+  }
+
+  strong.drop-shape {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #33f;
+    border-radius: 10% 50% 50% 50%;
+    -moz-border-radius: 10% 50% 50% 50%;
+    transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    display: block;
+    background: #ccf;
+  }
+
+  strong.drop {
+    width: 30px;
+    height: 30px;
+    margin: 4px;
+    display: inline-block;
+    background: -moz-linear-gradient(top left, rgba(255,255,255,.5), rgba(0,0,0, .75) 100%), #39f;
+    background: -webkit-linear-gradient(top left, rgba(255,255,255,.5), rgba(0,0,0, .75) 100%), #39f;
+    border: 1px solid #ccc;
+
+    border-radius: 10% 50% 50% 50%;
+    box-shadow: inset 2px -2px 3px #fff, inset -1px 1px 1px rgba(255,255,255, .2);
+    transform: rotate(45deg);
+
+    -moz-border-radius: 10% 50% 50% 50%;
+    -moz-box-shadow: inset 2px -2px 3px #fff, inset -1px 1px 1px rgba(255,255,255, .2);
+    -moz-transform: rotate(45deg);
+
+    -webkit-border-radius: 10% 50% 50% 50%;
+    -webkit-box-shadow: inset 2px -2px 3px #fff, inset -1px 1px 1px rgba(255,255,255, .2);
+    -webkit-transform: rotate(45deg);
+  }
+
+  strong.list-drop {
+    width: 30px;
+    height: 30px;
+    margin: 4px;
+    display: inline-block;
+    background: -moz-linear-gradient(top left, rgba(255,255,255,.5), rgba(0,0,0, .75) 100%), #39f;
+    background: -webkit-linear-gradient(top left, rgba(255,255,255,.5), rgba(0,0,0, .75) 100%), #39f;
+    border: 1px solid #ccc;
+    position: relative;
+
+    border-radius: 50%;
+    box-shadow: inset 2px -2px 3px #fff, inset -1px 1px 1px rgba(255,255,255, .2), 2px 0 2px rgba(0,0,0,.3);
+    transform: rotate(45deg);
+    transition: all linear .1s;
+
+    -moz-border-radius: 50%;
+    -moz-box-shadow: inset 2px -2px 3px #fff, inset -1px 1px 1px rgba(255,255,255, .2), 2px 0 2px rgba(0,0,0,.3);
+    -moz-transform: rotate(45deg);
+    -moz-transition: all linear .1s;
+
+    -webkit-border-radius: 50%;
+    -webkit-box-shadow: inset 2px -2px 3px #fff, inset -1px 1px 1px rgba(255,255,255, .2), 2px 0 2px rgba(0,0,0,.3);
+    -webkit-transform: rotate(45deg);
+    -webkit-transition: all linear .1s;
+  }
+  strong.list-drop:hover {
+    top: 3px;
+
+    border-radius: 10% 50% 50% 50%;
+    -moz-border-radius: 10% 50% 50% 50%;
+    -webkit-border-radius: 10% 50% 50% 50%;
+  }
+
+  strong.black { background-color: #666; border-color: #999; }
+  strong.white { background-color: #ccc; border-color: #999; }
+  strong.red   { background-color: #c00; border-color: #900; }
+  strong.green { background-color: #0c0; border-color: #090; }
+  strong.blue  { background-color: #00c; border-color: #009; }
+</style></p>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>http://ckazu.github.com/blog/2011/03/19/css3-CSS3/</loc>
+        <lastmod>2012-11-18T15:24:24+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ckazu.github.com/blog/2011/03/21/css3-jsdo-it-CSS3/</loc>
+        <lastmod>2012-11-18T15:24:24+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ckazu.github.com/blog/2011/05/23/ruby-rails-rails-Mix-in/</loc>
+        <lastmod>2012-11-18T15:24:24+09:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://ckazu.github.com/blog/2011/12/06/ruby-rails-rake-notes-spec-js-coffee-scss-haml-slim/
+        </loc>
+        <lastmod>2012-11-18T15:24:24+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ckazu.github.com/blog/archives/</loc>
+        <lastmod>2012-11-18T15:24:24+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ckazu.github.com/</loc>
+        <lastmod>2012-11-18T15:24:24+09:00</lastmod>
+    </url>
+</urlset>

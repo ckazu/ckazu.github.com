@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ckazu.github.com</title>
+  <title>rake notes で，spec, js, coffee, scss, haml, slim のファイルも対象にする - ckazu.github.com</title>
   <meta name="author" content="ckazu">
 
   
@@ -46,7 +46,7 @@ class SourceAnnotationExtractor def &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ckazu.github.com/">
+  <link rel="canonical" href="http://ckazu.github.com/blog/2011/12/06/ruby-rails-rake-notes-spec-js-coffee-scss-haml-slim/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -102,15 +102,12 @@ class SourceAnnotationExtractor def &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2011/12/06/ruby-rails-rake-notes-spec-js-coffee-scss-haml-slim/">Rake Notes で，spec, Js, Coffee, Scss, Haml, Slim のファイルも対象にする</a></h1>
+      <h1 class="entry-title">Rake Notes で，spec, Js, Coffee, Scss, Haml, Slim のファイルも対象にする</h1>
     
     
       <p class="meta">
@@ -133,7 +130,7 @@ class SourceAnnotationExtractor def &hellip;">
   </header>
 
 
-  <div class="entry-content"><figure class='code'><figcaption><span>SourceAnnotationExtractor.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="entry-content"><figure class='code'><figcaption><span>SourceAnnotationExtractor.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -192,108 +189,16 @@ class SourceAnnotationExtractor def &hellip;">
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/05/23/ruby-rails-rails-Mix-in/">Rails で Mix-in するときにすでにあるメソッドをオーバーライドする</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">ckazu</span></span>
 
-<time datetime="2011-05-23T00:00:00+09:00" pubdate data-updated="true">May 23<span>rd</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">NewMethod</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">mod</span><span class="o">.</span><span class="n">class_eval</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">alias_method_chain</span> <span class="ss">:method</span><span class="p">,</span> <span class="ss">:new_method</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">method_with_new_method</span>
-</span><span class='line'>    <span class="n">method_without_new_method</span>
-</span><span class='line'>    <span class="s1">&#39;new method&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">Origin</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">method</span>
-</span><span class='line'>    <span class="s1">&#39;origin method&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="kp">include</span> <span class="no">NewMethod</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">puts</span> <span class="no">Origin</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">method</span>    <span class="c1">#=&gt; new method</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>include をメソッドの後に書かないといけないのが微妙</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2011/05/23/ruby-rails-rails-Mix-in/">続きを読む &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/03/21/css3-jsdo-it-CSS3/">CSS3のみで色々な背景パターンを描画する</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -305,90 +210,36 @@ class SourceAnnotationExtractor def &hellip;">
   
 
 
-<time datetime="2011-03-21T00:00:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><script type="text/javascript" src="http://jsdo.it/blogparts/hvCi/js?view=design"></script>
-
-
-<p class="ttlBpJsdoit" style="width: 465px; margin: 0; text-align: right; font-size: 11px;"><a href="http://jsdo.it/ckazu/hvCi" title="CSS3 で作る背景パターン">CSS3 で作る背景パターン - jsdo.it - share JavaScript, HTML5 and CSS</a></p>
-
-
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2011/03/21/css3-jsdo-it-CSS3/">続きを読む &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2011-12-06T00:00:00+09:00" pubdate data-updated="true">Dec 6<span>th</span>, 2011</time>
       
-  <header>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2011/03/19/css3-CSS3/">CSS3で水滴のような形を描く</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
+      <div class="sharing">
   
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ckazu.github.com/blog/2011/12/06/ruby-rails-rake-notes-spec-js-coffee-scss-haml-slim/" data-via="ckazu" data-counturl="http://ckazu.github.com/blog/2011/12/06/ruby-rails-rake-notes-spec-js-coffee-scss-haml-slim/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
 
-
-<time datetime="2011-03-19T00:00:00+09:00" pubdate data-updated="true">Mar 19<span>th</span>, 2011</time>
-        
-      </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>CSS3 面白いですね．</p>
-
-<p>今までは思いつかなかったようなことができるようになっています．</p>
-
-<p>その CSS3 を使って，次のような水滴（のようなもの）を CSS だけで作ってみます．</p>
-
-<script type="text/javascript" src="http://jsdo.it/blogparts/cSGk/js"></script>
-
-
-<p>なお，動作確認は，chrome, firefox でしか行っていませんので，あしからず．</p>
-
-<p>IE での動作は全く保証しません．</p>
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/05/23/ruby-rails-rails-Mix-in/" title="Previous Post: rails で Mix-in するときにすでにあるメソッドをオーバーライドする">&laquo; rails で Mix-in するときにすでにあるメソッドをオーバーライドする</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2011/03/19/css3-CSS3/">続きを読む &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -418,7 +269,7 @@ class SourceAnnotationExtractor def &hellip;">
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -437,6 +288,7 @@ class SourceAnnotationExtractor def &hellip;">
 
   
 </aside>
+
 
     </div>
   </div>
